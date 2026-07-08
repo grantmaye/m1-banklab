@@ -124,6 +124,13 @@ cp .env.example .env
 docker compose up -d
 ```
 
+If port `5432` is already occupied, run PostgreSQL on another host port:
+
+```sh
+POSTGRES_PORT=55432 docker compose up -d
+SPRING_DATASOURCE_URL=jdbc:postgresql://localhost:55432/m1_banklab mvn spring-boot:run
+```
+
 Run tests:
 
 ```sh
