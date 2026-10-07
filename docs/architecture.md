@@ -6,11 +6,17 @@
 
 ```mermaid
 flowchart LR
-    Client[API client / Swagger / Postman] --> API[Spring Boot REST API]
+    Desk[Static operations desk in Spring JAR] --> API[Spring Boot REST API]
+    Client[API client / Swagger / Postman] --> API
     API --> DB[(PostgreSQL)]
     API --> OpenAPI[OpenAPI docs]
     CI[GitHub Actions] --> Tests[JUnit + Testcontainers]
     Tests --> DBTest[(Ephemeral PostgreSQL)]
+    CI --> Browser[Playwright + axe]
+    Browser --> AppTest[Packaged Spring app]
+    AppTest --> BrowserDB[(Dedicated PostgreSQL service)]
+    Browser --> Assertions[Direct SQL assertions]
+    Assertions --> BrowserDB
 ```
 
 ## Module Map
@@ -98,6 +104,9 @@ sequenceDiagram
 
 ## Design Constraints
 
+- The desk uses same-origin APIs and ships as static classpath resources; no separate frontend runtime.
+- Browser state is a last-read view; business validation and authoritative balances remain in Spring/PostgreSQL.
+- Submission guards and reload warnings are client safety features, not backend idempotency.
 - Controllers stay thin.
 - Services own business logic.
 - DTOs define API boundaries.

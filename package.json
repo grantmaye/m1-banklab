@@ -11,5 +11,7 @@
     "@playwright/test": "1.63.0",
     "pg": "8.23.1"
   },
-  "engines": { "node": ">=22" }
+  "engines": {
+    "node": ">=22"
+  }
 }
