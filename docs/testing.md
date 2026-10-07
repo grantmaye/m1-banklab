@@ -12,6 +12,7 @@ Current examples:
 
 - `FraudRulesTest`
 - `MoneyTest`
+- `TransferServiceTest` (both transfer lock directions)
 
 These tests should stay fast and focused.
 
@@ -48,13 +49,9 @@ GitHub Actions runs:
 mvn test
 ```
 
-The current CI result confirms:
+CI also parses the PostgreSQL integration test report and requires zero skipped tests. Inspect the run associated with the commit under review rather than relying on a historical test count. The suite currently includes precision/size validation and insufficient-transfer balance preservation in addition to the original banking flow.
 
-- 6 tests run.
-- 0 failures.
-- 0 errors.
-- 0 skipped on GitHub Actions.
-- Testcontainers starts PostgreSQL successfully.
+Local `mvn verify` can succeed with integration tests skipped when Docker is absent; inspect `target/surefire-reports` before claiming database validation. The package build produces an executable Spring Boot JAR.
 
 ## Future Test Coverage
 

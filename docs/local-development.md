@@ -22,6 +22,10 @@ Copy the sample environment file:
 cp .env.example .env
 ```
 
+Compose reads `.env`, but Maven/Spring does not automatically load that file. Export customized `SPRING_DATASOURCE_*` variables into the Maven process; keep them consistent with Compose. Existing PostgreSQL volumes retain their initialization credentials.
+
+The app and published database port bind to loopback by default. Use synthetic data only.
+
 Default values:
 
 ```text
@@ -90,3 +94,5 @@ To remove the Postgres volume:
 ```sh
 docker compose down -v
 ```
+
+For the full source walkthrough and failure labs, see the [technical manual](technical-manual.md).

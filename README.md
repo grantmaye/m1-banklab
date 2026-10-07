@@ -1,8 +1,8 @@
 # m1-banklab
 
-`m1-banklab` is a professional Java/Spring Boot banking systems lab for demonstrating backend engineering skills relevant to banking, fintech, fraud, payments, and enterprise systems.
+`m1-banklab` is a synthetic Java/Spring Boot banking systems lab for demonstrating backend engineering skills relevant to banking, fintech, fraud, payments, and enterprise systems.
 
-This is not a fake banking app UI. It is a backend systems lab for learning and demonstrating Java banking infrastructure: account ledgers, transaction validation, fraud rules, auditability, and future event-driven architecture.
+It uses invented customers and balances to teach backend engineering. It does not connect to banks, move real money, implement regulatory compliance, or provide production authentication. Keep it on localhost and use synthetic data only. Account balance records are not a double-entry ledger.
 
 ## What It Demonstrates
 
@@ -37,6 +37,8 @@ This is not a fake banking app UI. It is a backend systems lab for learning and 
 
 ## Documentation
 
+- [Technical manual](docs/technical-manual.md)
+- [Product story and demo](docs/product-story.md)
 - [Architecture](docs/architecture.md)
 - [Roadmap](docs/roadmap.md)
 - [API Examples](docs/api-examples.md)
@@ -100,15 +102,6 @@ If port `5432` is already occupied:
 POSTGRES_PORT=55432 docker compose up -d
 SPRING_DATASOURCE_URL=jdbc:postgresql://localhost:55432/m1_banklab mvn spring-boot:run
 ```
-
-## Screenshots
-
-Add screenshots after running locally:
-
-- `docs/screenshots/swagger-ui.png` - Swagger UI API docs.
-- `docs/screenshots/postman-transfer.png` - Transfer request example.
-- `docs/screenshots/fraud-assessments.png` - Fraud assessment response.
-- `docs/screenshots/audit-events.png` - Audit event response.
 
 ## Why This Matters
 

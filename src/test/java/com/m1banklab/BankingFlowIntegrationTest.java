@@ -95,6 +95,35 @@ class BankingFlowIntegrationTest {
         assertThat(auditJson).contains("WITHDRAWAL_FAILED").contains("FRAUD_ASSESSED");
     }
 
+    @Test
+    void rejectsFractionalCentsAndOversizedAmountsWithoutChangingBalance() throws Exception {
+        UUID customer = createCustomer("Precision", "Fixture", "precision@example.test");
+        UUID account = createAccount(customer, "CHECKING", "100.00");
+        for (String amount : new String[]{"1.001", "100000000000000000.00"}) {
+            mockMvc.perform(post("/api/accounts/{id}/deposit", account)
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content("{\"amount\": \"%s\"}".formatted(amount)))
+                    .andExpect(status().isBadRequest());
+        }
+        mockMvc.perform(get("/api/accounts/{id}", account))
+                .andExpect(status().isOk()).andExpect(jsonPath("$.balance").value(100.00));
+    }
+
+    @Test
+    void rejectedTransferLeavesBothBalancesUnchanged() throws Exception {
+        UUID customer = createCustomer("Rollback", "Fixture", "rollback@example.test");
+        UUID source = createAccount(customer, "CHECKING", "100.00");
+        UUID target = createAccount(customer, "SAVINGS", "50.00");
+        mockMvc.perform(post("/api/transfers").contentType(MediaType.APPLICATION_JSON)
+                        .content("""
+                                {"sourceAccountId":"%s","targetAccountId":"%s","amount":"101.00"}
+                                """.formatted(source, target)))
+                .andExpect(status().isUnprocessableEntity());
+        mockMvc.perform(get("/api/accounts/{id}", source)).andExpect(jsonPath("$.balance").value(100.00));
+        mockMvc.perform(get("/api/accounts/{id}", target)).andExpect(jsonPath("$.balance").value(50.00));
+        mockMvc.perform(get("/api/accounts/{id}/transactions", source)).andExpect(jsonPath("$.length()").value(0));
+    }
+
     private UUID createCustomer(String firstName, String lastName, String email) throws Exception {
         String json = mockMvc.perform(post("/api/customers")
                         .contentType(MediaType.APPLICATION_JSON)

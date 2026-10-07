@@ -18,6 +18,7 @@ spring:
         format_sql: true
 
 server:
+  address: ${SERVER_ADDRESS:127.0.0.1}
   port: ${SERVER_PORT:8080}
 
 springdoc:

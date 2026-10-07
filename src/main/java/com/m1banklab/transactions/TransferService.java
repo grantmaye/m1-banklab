@@ -23,10 +23,16 @@ public class TransferService {
             throw new BusinessRuleException("Source and target accounts must be different.");
         }
 
-        Account source = accountRepository.findByIdForUpdate(request.sourceAccountId())
-                .orElseThrow(() -> new NotFoundException("Source account not found: " + request.sourceAccountId()));
-        Account target = accountRepository.findByIdForUpdate(request.targetAccountId())
-                .orElseThrow(() -> new NotFoundException("Target account not found: " + request.targetAccountId()));
+        // All transfers acquire locks in the same UUID order, including A→B and B→A.
+        boolean sourceFirst = request.sourceAccountId().compareTo(request.targetAccountId()) < 0;
+        var firstId = sourceFirst ? request.sourceAccountId() : request.targetAccountId();
+        var secondId = sourceFirst ? request.targetAccountId() : request.sourceAccountId();
+        Account first = accountRepository.findByIdForUpdate(firstId)
+                .orElseThrow(() -> new NotFoundException("Account not found: " + firstId));
+        Account second = accountRepository.findByIdForUpdate(secondId)
+                .orElseThrow(() -> new NotFoundException("Account not found: " + secondId));
+        Account source = sourceFirst ? first : second;
+        Account target = sourceFirst ? second : first;
 
         if (!source.canDebit(request.amount())) {
             throw new BusinessRuleException("Insufficient funds for transfer.");
