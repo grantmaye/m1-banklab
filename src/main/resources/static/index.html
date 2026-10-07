@@ -21,12 +21,11 @@
     <header class="masthead">
       <a class="brand" href="/" aria-label="M1 Banklab home"
         ><span class="monogram" aria-hidden="true">m1</span
-        ><span
-          >Banklab<span class="brand-note">A banking systems study</span></span
-        ></a
+        ><span>Banklab</span></a
       >
       <nav aria-label="Main navigation">
-        <a href="#accounts">Accounts</a><a href="#journal">Journal</a
+        <a href="#journal" aria-current="page">Activity</a
+        ><a href="#transfer">New transfer</a
         ><a href="/swagger-ui.html"
           >API reference <span aria-hidden="true">↗</span></a
         >
@@ -38,9 +37,11 @@
     <main id="main">
       <div class="intro">
         <div>
-          <p class="eyebrow">WORKSPACE / 01</p>
-          <h1>Operations desk<span>.</span></h1>
-          <p class="intro-copy">Move fictional funds. Follow the evidence.</p>
+          <h1>Account activity</h1>
+          <p class="intro-copy">
+            Review balances, trace a movement, and inspect the records behind
+            it.
+          </p>
         </div>
         <div class="sync">
           <button type="button" class="button secondary" id="refresh">
@@ -50,7 +51,7 @@
         </div>
       </div>
       <div class="demo-notice">
-        <span class="notice-label">SIMULATION</span>
+        <span class="notice-label">Demo environment</span>
         <p>
           Invented customers. Fictional funds. No bank connections or real
           payments. All amounts are <strong>demo units</strong>, with no
@@ -74,8 +75,7 @@
         >
           <div class="section-heading">
             <div>
-              <p class="eyebrow">01 / ACCOUNTS</p>
-              <h2 id="accounts-title">The sample book</h2>
+              <h2 id="accounts-title">Accounts</h2>
             </div>
             <span class="small-label">3 seeded accounts</span>
           </div>
@@ -84,8 +84,15 @@
               <p class="small-label">Combined balance · demo units</p>
               <p class="total" id="total-balance">—</p>
             </div>
-            <span class="book-mark" aria-hidden="true">Ⅰ</span>
           </div>
+          <button
+            class="all-accounts"
+            id="all-accounts"
+            type="button"
+            aria-pressed="true"
+          >
+            All accounts <span>→</span>
+          </button>
           <div
             class="account-list"
             id="account-list"
@@ -101,14 +108,74 @@
           </p>
         </section>
         <section
+          id="journal"
+          class="panel journal-panel"
+          aria-labelledby="journal-title"
+        >
+          <div class="section-heading">
+            <div>
+              <h2 id="journal-title">Transaction journal</h2>
+            </div>
+            <span id="journal-count" class="small-label">Awaiting records</span>
+          </div>
+          <div class="journal-tools">
+            <div class="search-field">
+              <label for="journal-search">Search journal</label
+              ><input
+                id="journal-search"
+                type="search"
+                placeholder="Note, account or reference"
+              />
+            </div>
+            <div class="filter-field">
+              <label for="journal-filter">Show activity for</label
+              ><select id="journal-filter">
+                <option value="all">All seeded accounts</option>
+              </select>
+            </div>
+          </div>
+          <div class="journal-columns" aria-hidden="true">
+            <span>Movement / recorded</span><span>Amount · demo units</span>
+          </div>
+          <div id="journal-list" class="journal-list">
+            <p class="empty">
+              The journal will appear after the service responds.
+            </p>
+          </div>
+          <p class="panel-footnote">
+            Select a movement to view its account route, risk assessment and
+            audit trail.
+          </p>
+        </section>
+        <section
+          id="inspection"
+          class="panel inspection-panel"
+          aria-labelledby="inspection-title"
+        >
+          <div class="section-heading">
+            <div>
+              <h2 id="inspection-title">Transaction details</h2>
+            </div>
+          </div>
+          <div id="transaction-detail">
+            <div class="empty detail-empty">
+              <span aria-hidden="true">≡</span>
+              <h3>Every movement has a story.</h3>
+              <p>
+                Post a fictional transfer, then select its journal entry to
+                trace the account movement, risk assessment, and audit events.
+              </p>
+            </div>
+          </div>
+        </section>
+        <section
           id="transfer"
           class="panel transfer-panel"
           aria-labelledby="transfer-title"
         >
           <div class="section-heading">
             <div>
-              <p class="eyebrow">02 / TRANSFER</p>
-              <h2 id="transfer-title">Make a movement</h2>
+              <h2 id="transfer-title">New transfer</h2>
             </div>
             <span class="small-label">Fictional funds only</span>
           </div>
@@ -193,57 +260,6 @@
             keys: repeating a transfer can debit again.
           </p>
         </section>
-        <section
-          id="journal"
-          class="panel journal-panel"
-          aria-labelledby="journal-title"
-        >
-          <div class="section-heading">
-            <div>
-              <p class="eyebrow">03 / TRANSACTION JOURNAL</p>
-              <h2 id="journal-title">Follow the movement</h2>
-            </div>
-            <span id="journal-count" class="small-label">Awaiting records</span>
-          </div>
-          <div class="journal-tools">
-            <label for="journal-filter">Show activity for</label
-            ><select id="journal-filter">
-              <option value="all">All seeded accounts</option>
-            </select>
-          </div>
-          <div id="journal-list" class="journal-list">
-            <p class="empty">
-              The journal will appear after the service responds.
-            </p>
-          </div>
-          <p class="panel-footnote">
-            Select a record to inspect its evidence. This is a transaction
-            journal, not a double-entry ledger.
-          </p>
-        </section>
-        <section
-          id="inspection"
-          class="panel inspection-panel"
-          aria-labelledby="inspection-title"
-        >
-          <div class="section-heading">
-            <div>
-              <p class="eyebrow">04 / INSPECTION</p>
-              <h2 id="inspection-title">Behind the entry</h2>
-            </div>
-            <span aria-hidden="true" class="inspection-mark">↳</span>
-          </div>
-          <div id="transaction-detail">
-            <div class="empty detail-empty">
-              <span aria-hidden="true">≡</span>
-              <h3>Every movement has a story.</h3>
-              <p>
-                Post a fictional transfer, then select its journal entry to
-                trace the account movement, risk assessment, and audit events.
-              </p>
-            </div>
-          </div>
-        </section>
       </div>
       <details class="boundary">
         <summary>What this lab demonstrates</summary>
@@ -263,8 +279,8 @@
       </details>
     </main>
     <footer>
-      <span><strong>M1 BANKLAB</strong> / ENGINEERING IN THE OPEN</span
-      ><span>Java · Spring Boot · PostgreSQL</span>
+      <span>Banklab · Fictional banking operations</span
+      ><a href="/swagger-ui.html">Explore the API</a>
     </footer>
   </body>
 </html>
