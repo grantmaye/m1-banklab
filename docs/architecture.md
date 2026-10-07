@@ -84,7 +84,7 @@ sequenceDiagram
 
     Client->>Controller: POST /api/transfers
     Controller->>Transfer: transfer(request)
-    Transfer->>Accounts: lock source and target accounts
+    Transfer->>Accounts: lock accounts in consistent UUID order
     Transfer->>Transfer: validate funds and mutate balances
     Transfer->>Tx: recordPosted(...)
     Tx->>DB: insert transaction
@@ -106,3 +106,5 @@ sequenceDiagram
 - `BigDecimal` is used for money.
 - Account writes use pessimistic locking for balance mutation.
 - Every financial action should produce an audit trail.
+
+This is a synthetic balance-and-transaction-journal model, not a double-entry ledger. The notification module stores records and does not send messages. Requests are not idempotent and all routes currently permit unauthenticated access; see the [technical manual](technical-manual.md).
