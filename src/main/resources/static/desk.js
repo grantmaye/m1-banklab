@@ -135,7 +135,16 @@ function renderAccounts() {
   );
   $("account-list").replaceChildren(
     ...state.accounts.map((account) => {
-      const row = node("div", "account-row");
+      const row = node("button", "account-row");
+      row.type = "button";
+      row.setAttribute(
+        "aria-pressed",
+        String($("journal-filter").value === account.id),
+      );
+      row.addEventListener("click", () => {
+        $("journal-filter").value = account.id;
+        renderJournal();
+      });
       row.dataset.accountId = account.id;
       const avatar = node(
         "span",
@@ -159,7 +168,7 @@ function renderAccounts() {
       const amount = node("div", "account-amount");
       amount.append(
         node("strong", "", money(account.balance)),
-        node("p", "", account.status),
+        node("p", "", titleCase(account.status)),
       );
       row.append(avatar, owner, amount);
       return row;
@@ -209,12 +218,28 @@ function selectTransaction(id) {
 
 function renderJournal() {
   const filter = $("journal-filter").value;
+  const query = $("journal-search").value.trim().toLowerCase();
   const transactions = state.transactions.filter(
     (item) =>
-      filter === "all" ||
-      item.sourceAccountId === filter ||
-      item.targetAccountId === filter,
+      (filter === "all" ||
+        item.sourceAccountId === filter ||
+        item.targetAccountId === filter) &&
+      [
+        item.description,
+        item.id,
+        item.type,
+        item.status,
+        accountLabel(item.sourceAccountId),
+        accountLabel(item.targetAccountId),
+      ].some((value) =>
+        String(value || "")
+          .toLowerCase()
+          .includes(query),
+      ),
   );
+  $("all-accounts").setAttribute("aria-pressed", String(filter === "all"));
+  for (const row of $("account-list").querySelectorAll("button"))
+    row.setAttribute("aria-pressed", String(row.dataset.accountId === filter));
   $("journal-count").textContent =
     `${transactions.length} ${transactions.length === 1 ? "entry" : "entries"}`;
   if (!transactions.some((item) => item.id === state.selected))
@@ -256,7 +281,7 @@ function renderJournal() {
         node(
           "span",
           transaction.status === "FAILED" ? "failed" : "",
-          transaction.status,
+          titleCase(transaction.status),
         ),
       );
       button.append(symbol, copy, amount);
@@ -269,7 +294,9 @@ function renderJournal() {
       node(
         "p",
         "empty",
-        "No movements yet. Opening balances are not journal entries. Post a fictional transfer to begin.",
+        query
+          ? "No matching movements. Try another search or account."
+          : "No movements for these accounts yet. Opening balances are not journal entries. Post a fictional transfer to begin.",
       ),
     );
   renderDetail();
@@ -283,7 +310,7 @@ function renderDetail() {
     const empty = node("div", "empty detail-empty");
     empty.append(
       node("span", "", "≡"),
-      node("h3", "", "Every movement has a story."),
+      node("h3", "", "Select a movement"),
       node(
         "p",
         "",
@@ -326,7 +353,7 @@ function renderDetail() {
     (item) => item.transactionId === transaction.id,
   );
   const risk = node("div", "evidence");
-  risk.append(node("h3", "", "RISK ASSESSMENT"));
+  risk.append(node("h3", "", "Risk assessment"));
   if (assessment)
     risk.append(
       node(
@@ -348,7 +375,7 @@ function renderDetail() {
     ),
   );
   const audit = node("div", "evidence");
-  audit.append(node("h3", "", "AUDIT EVIDENCE"));
+  audit.append(node("h3", "", "Audit trail"));
   const events = state.events.filter(
     (event) =>
       event.aggregateType === "TRANSACTION" &&
@@ -508,6 +535,7 @@ $("transfer-form").addEventListener("submit", async (event) => {
     sessionStorage.removeItem(pendingKey);
     state.selected = transaction.id;
     $("journal-filter").value = "all";
+    $("journal-search").value = "";
     input.value = "";
     $("description").value = "";
     status(
@@ -547,6 +575,11 @@ $("source").addEventListener("change", updateSource);
 $("target").addEventListener("change", updateSource);
 $("amount").addEventListener("input", () => $("amount").setCustomValidity(""));
 $("journal-filter").addEventListener("change", renderJournal);
+$("journal-search").addEventListener("input", renderJournal);
+$("all-accounts").addEventListener("click", () => {
+  $("journal-filter").value = "all";
+  renderJournal();
+});
 $("scenario-transfer").addEventListener("click", () => {
   $("amount").value = "250.00";
   $("amount").setCustomValidity("");

@@ -274,10 +274,45 @@ test("mobile desk supports keyboard inspection, filtering, and accessible reflow
     path: testInfo.outputPath("operations-mobile.png"),
     fullPage: true,
   });
+  await page.setViewportSize({ width: 1024, height: 900 });
+  expect(
+    await page.evaluate(
+      () => document.documentElement.scrollWidth <= window.innerWidth,
+    ),
+  ).toBe(true);
+  await page.screenshot({
+    path: testInfo.outputPath("operations-tablet.png"),
+    fullPage: true,
+  });
   await page.setViewportSize({ width: 320, height: 812 });
   expect(
     await page.evaluate(
       () => document.documentElement.scrollWidth <= window.innerWidth,
     ),
   ).toBe(true);
+});
+
+test("account register and search keep journal selection and evidence in sync", async ({
+  page,
+}) => {
+  await openDesk(page);
+  const entry = page.locator("#journal-list .entry").first();
+  await expect(entry).toBeVisible();
+  const id = await entry.getAttribute("data-transaction-id");
+  await page.getByLabel("Search journal").fill(id);
+  await expect(page.locator("#journal-list .entry")).toHaveCount(1);
+  await expect(page.locator("#transaction-detail")).toContainText(id);
+  await page.getByLabel("Search journal").fill("no-record-matches-this-query");
+  await expect(page.locator("#journal-list")).toContainText(
+    "No matching movements",
+  );
+  await expect(page.locator("#transaction-detail")).not.toContainText(id);
+  await page.getByLabel("Search journal").fill("");
+  const account = page.locator(`[data-account-id="${source}"]`);
+  await account.click();
+  await expect(account).toHaveAttribute("aria-pressed", "true");
+  await expect(page.locator("#journal-filter")).toHaveValue(source);
+  await page.getByRole("button", { name: "All accounts" }).click();
+  await expect(account).toHaveAttribute("aria-pressed", "false");
+  await expect(page.locator("#journal-filter")).toHaveValue("all");
 });
