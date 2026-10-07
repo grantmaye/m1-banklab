@@ -4,6 +4,10 @@
 
 It uses invented customers and balances to teach backend engineering. It does not connect to banks, move real money, implement regulatory compliance, or provide production authentication. Keep it on localhost and use synthetic data only. Account balance records are not a double-entry ledger.
 
+![Operations desk after a real synthetic transfer through Spring and PostgreSQL](docs/screenshots/operations-desktop.png)
+
+[Mobile view and screenshot provenance](docs/screenshots/README.md)
+
 ## What It Demonstrates
 
 - A responsive, keyboard-accessible operations desk served directly by Spring.

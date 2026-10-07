@@ -1,5 +1,13 @@
 # Changelog
 
+## Unreleased
+
+- Added the fictional banking operations desk at `/`, served inside the Spring JAR.
+- Connected seeded account balances, transfers, journal inspection, risk assessments, and audit evidence to existing APIs.
+- Added exact decimal handling, accessible responsive controls, repeated-submit guards, and explicit uncertain-outcome recovery.
+- Added Chromium → Spring → PostgreSQL CI coverage with direct SQL assertions and retained screenshots.
+- Expanded the technical manual and product story with the UI flow, state transitions, failure labs, and exercises.
+
 ## 0.1.0 - 2026-07-08
 
 - Initial Spring Boot 3 modular monolith scaffold.
