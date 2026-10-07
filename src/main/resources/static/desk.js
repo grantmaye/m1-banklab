@@ -436,6 +436,8 @@ async function refresh() {
 
 function unknownOutcome() {
   state.uncertain = true;
+  // A read taken before this write cannot qualify as post-request inspection.
+  state.fresh = false;
   status(
     "transfer-status",
     "Outcome unconfirmed. The request may have committed. Do not repeat it automatically. Refresh and inspect balances and the journal before deciding whether to start a new transfer. A read cannot prove that an in-flight request has finished.",

@@ -186,6 +186,7 @@ test("lost response after real commit stays unconfirmed across reload without re
   );
   expect(await count()).toBe(beforeCount + 1);
   await expect(page.locator("#submit-transfer")).toBeDisabled();
+  await expect(page.locator("#acknowledge")).toBeDisabled();
   await page.reload();
   await expect(page.locator("#transfer-status")).toContainText(
     "Outcome unconfirmed",
