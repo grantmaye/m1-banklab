@@ -1,11 +1,17 @@
 # m1-banklab
 
-`m1-banklab` is a synthetic Java/Spring Boot banking systems lab for demonstrating backend engineering skills relevant to banking, fintech, fraud, payments, and enterprise systems.
+`m1-banklab` is a synthetic Java/Spring Boot banking systems lab with an operations desk that makes backend behavior visible: move fictional funds, inspect account balances, and follow a transaction through its journal, risk assessment, and audit evidence.
 
 It uses invented customers and balances to teach backend engineering. It does not connect to banks, move real money, implement regulatory compliance, or provide production authentication. Keep it on localhost and use synthetic data only. Account balance records are not a double-entry ledger.
 
+![Operations desk after a real synthetic transfer through Spring and PostgreSQL](docs/screenshots/operations-desktop.png)
+
+[Mobile view and screenshot provenance](docs/screenshots/README.md)
+
 ## What It Demonstrates
 
+- A responsive, keyboard-accessible operations desk served directly by Spring.
+- Real account reads and transfers through same-origin APIs; no frontend build required.
 - Modular monolith architecture that can later split into services.
 - Customer and account lifecycle APIs.
 - Deposit, withdrawal, and transfer workflows.
@@ -17,6 +23,7 @@ It uses invented customers and balances to teach backend engineering. It does no
 - Dockerized local development.
 - JUnit 5 and Testcontainers integration tests.
 - GitHub Actions CI.
+- Browser → Spring → PostgreSQL tests with direct database assertions and screenshots.
 
 ## Tech Stack
 
@@ -34,6 +41,7 @@ It uses invented customers and balances to teach backend engineering. It does no
 - JUnit 5
 - Testcontainers
 - GitHub Actions
+- Plain HTML/CSS/JavaScript; Playwright and axe for development tests
 
 ## Documentation
 
@@ -84,11 +92,17 @@ mvn test
 mvn spring-boot:run
 ```
 
-Open Swagger:
+Open the operations desk:
 
 ```text
-http://localhost:8080/swagger-ui.html
+http://localhost:8080/
 ```
+
+Select Avery's checking account and Jordan's checking account, enter `250.00`, and post a fictional transfer. On a fresh database their balances change from `2500.00` / `1000.00` to `2250.00` / `1250.00`. Select the journal entry to inspect its server-generated transaction ID, fraud assessment, and audit events. **Insufficient funds** prepares an amount above the last read balance; it sends nothing until you submit. The backend evaluates that request and returns 422 if funds are insufficient.
+
+The desk uses only the three seeded accounts. Swagger at `/swagger-ui.html` covers the remaining customer, deposit, and withdrawal APIs. The UI disables overlapping submissions, but the backend has **no idempotency keys**. After an uncertain response, inspect the records before deciding on any new transfer.
+
+Node is only required for frontend tests, not to run the application. With a disposable Compose database and a built JAR, run `npm ci`, `npm test`, `npx playwright install chromium`, and `npm run test:browser`. See [Testing Strategy](docs/testing.md) for database settings and the exact checks.
 
 Stop local infrastructure:
 
@@ -105,7 +119,7 @@ SPRING_DATASOURCE_URL=jdbc:postgresql://localhost:55432/m1_banklab mvn spring-bo
 
 ## Why This Matters
 
-Banking backends are less about flashy screens and more about correctness under constraints:
+The operations desk gives reviewers a direct way to inspect correctness under constraints:
 
 - Money movement must be validated and traceable.
 - Account balances need consistent transaction boundaries.
@@ -113,7 +127,7 @@ Banking backends are less about flashy screens and more about correctness under 
 - Every important action needs an audit trail.
 - Systems should be modular before they become distributed.
 
-`m1-banklab` is designed to show those concerns directly in code.
+`m1-banklab` connects the visible workflow to those decisions in code. The [technical manual](docs/technical-manual.md) walks through the frontend state, APIs, database transactions, failure labs, and exercises with answers. The [product story](docs/product-story.md) explains the fictional training scenario and who benefits from it.
 
 ## License
 

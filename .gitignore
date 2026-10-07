@@ -6,3 +6,7 @@ target/
 .vscode/
 .env
 *.log
+node_modules/
+playwright-report/
+test-results/
+.cache/

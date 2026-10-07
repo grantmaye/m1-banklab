@@ -5,6 +5,7 @@
 - Java 21
 - Maven
 - Docker Desktop
+- Node 22+ only for JavaScript/browser tests (not needed to serve the desk)
 
 Check versions:
 
@@ -71,7 +72,15 @@ Tests include unit tests and a Testcontainers-backed PostgreSQL integration test
 mvn spring-boot:run
 ```
 
-Swagger UI:
+Operations desk:
+
+```text
+http://localhost:8080/
+```
+
+Spring serves the files in `src/main/resources/static` directly. There is no separate frontend server or asset build. Rebuild/restart the JAR after editing static files. The desk selects only the seeded fictional accounts, posts to the existing transfer API, and exposes journal/risk/audit evidence. Keep real data out of it.
+
+Swagger UI for the remaining APIs:
 
 ```text
 http://localhost:8080/swagger-ui.html

@@ -1,0 +1,17 @@
+{
+  "name": "m1-banklab-browser-tests",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "node --test tests/money.test.js",
+    "test:browser": "playwright test"
+  },
+  "devDependencies": {
+    "@axe-core/playwright": "4.13.0",
+    "@playwright/test": "1.63.0",
+    "pg": "8.23.1"
+  },
+  "engines": {
+    "node": ">=22"
+  }
+}

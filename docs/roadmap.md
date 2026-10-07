@@ -64,12 +64,12 @@ This roadmap is organized around portfolio value and banking-system realism. Ite
 - Add Postman collection.
 - Add architecture decision records.
 - Add richer sample data.
-- Add screenshots to `docs/screenshots`.
+- Extend the seeded-account desk with paginated, transaction-specific evidence queries.
 
 ## Good First Issues
 
 - Add `GET /api/customers/{id}/accounts`.
 - Add `GET /api/notifications`.
-- Add validation that account opening balance must be normalized to two decimals.
+- Add malformed-body and concurrent-write regression cases beyond existing precision validation.
 - Add error response examples to the README.
 - Add a Postman collection export.

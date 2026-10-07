@@ -1,0 +1,270 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#562b34" />
+    <meta
+      name="description"
+      content="A fictional banking operations desk. Explore transfers, transaction journals, and the evidence behind them."
+    />
+    <title>Operations desk · M1 Banklab</title>
+    <link
+      rel="icon"
+      href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='12' fill='%23562b34'/%3E%3Ctext x='12' y='44' fill='%23f8f3e9' font-size='36' font-family='Georgia'%3EM%3C/text%3E%3C/svg%3E"
+    />
+    <link rel="stylesheet" href="/desk.css" />
+    <script type="module" src="/desk.js"></script>
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Skip to operations</a>
+    <header class="masthead">
+      <a class="brand" href="/" aria-label="M1 Banklab home"
+        ><span class="monogram" aria-hidden="true">m1</span
+        ><span
+          >Banklab<span class="brand-note">A banking systems study</span></span
+        ></a
+      >
+      <nav aria-label="Main navigation">
+        <a href="#accounts">Accounts</a><a href="#journal">Journal</a
+        ><a href="/swagger-ui.html"
+          >API reference <span aria-hidden="true">↗</span></a
+        >
+      </nav>
+      <span class="environment"
+        ><span aria-hidden="true">●</span> Local lab</span
+      >
+    </header>
+    <main id="main">
+      <div class="intro">
+        <div>
+          <p class="eyebrow">WORKSPACE / 01</p>
+          <h1>Operations desk<span>.</span></h1>
+          <p class="intro-copy">Move fictional funds. Follow the evidence.</p>
+        </div>
+        <div class="sync">
+          <button type="button" class="button secondary" id="refresh">
+            Refresh records <span aria-hidden="true">↻</span>
+          </button>
+          <p id="sync-time">Awaiting first read</p>
+        </div>
+      </div>
+      <div class="demo-notice">
+        <span class="notice-label">SIMULATION</span>
+        <p>
+          Invented customers. Fictional funds. No bank connections or real
+          payments. All amounts are <strong>demo units</strong>, with no
+          currency model.
+        </p>
+      </div>
+      <div id="load-status" class="status" role="status" aria-live="polite">
+        Reading the local banking service…
+      </div>
+      <noscript
+        ><p class="status error">
+          JavaScript is needed for the operations desk. The API reference
+          remains available above.
+        </p></noscript
+      >
+      <div class="desk-grid">
+        <section
+          id="accounts"
+          class="panel accounts-panel"
+          aria-labelledby="accounts-title"
+        >
+          <div class="section-heading">
+            <div>
+              <p class="eyebrow">01 / ACCOUNTS</p>
+              <h2 id="accounts-title">The sample book</h2>
+            </div>
+            <span class="small-label">3 seeded accounts</span>
+          </div>
+          <div class="balance-summary">
+            <div>
+              <p class="small-label">Combined balance · demo units</p>
+              <p class="total" id="total-balance">—</p>
+            </div>
+            <span class="book-mark" aria-hidden="true">Ⅰ</span>
+          </div>
+          <div
+            class="account-list"
+            id="account-list"
+            aria-label="Seeded account balances"
+          >
+            <p class="empty">
+              Balances will appear after the service responds.
+            </p>
+          </div>
+          <p class="panel-footnote">
+            Opening balances come from the database fixture. Refresh reads the
+            current state.
+          </p>
+        </section>
+        <section
+          id="transfer"
+          class="panel transfer-panel"
+          aria-labelledby="transfer-title"
+        >
+          <div class="section-heading">
+            <div>
+              <p class="eyebrow">02 / TRANSFER</p>
+              <h2 id="transfer-title">Make a movement</h2>
+            </div>
+            <span class="small-label">Fictional funds only</span>
+          </div>
+          <form id="transfer-form">
+            <fieldset id="transfer-fields" disabled>
+              <legend class="sr-only">Transfer between seeded accounts</legend>
+              <div class="account-inputs">
+                <div class="field">
+                  <label for="source">From account</label
+                  ><select id="source" name="source" required></select>
+                </div>
+                <span class="direction" aria-hidden="true">↓</span>
+                <div class="field">
+                  <label for="target">To account</label
+                  ><select id="target" name="target" required></select>
+                </div>
+              </div>
+              <p id="source-balance" class="input-note">
+                Choose a source account.
+              </p>
+              <div class="field">
+                <label for="amount">Amount <span>demo units</span></label
+                ><input
+                  id="amount"
+                  name="amount"
+                  type="text"
+                  inputmode="decimal"
+                  autocomplete="off"
+                  maxlength="20"
+                  placeholder="0.00"
+                  value="250.00"
+                  required
+                  aria-describedby="amount-help"
+                />
+                <p class="input-note" id="amount-help">
+                  Positive amount, up to 2 decimal places.
+                </p>
+              </div>
+              <div class="field">
+                <label for="description"
+                  >Journal note <span>optional</span></label
+                ><input
+                  id="description"
+                  name="description"
+                  type="text"
+                  maxlength="240"
+                  placeholder="e.g. Workshop supplies"
+                  autocomplete="off"
+                />
+              </div>
+              <div class="scenarios">
+                <span>Prepare a scenario</span
+                ><button type="button" id="scenario-transfer">250 units</button
+                ><button type="button" id="scenario-insufficient">
+                  Insufficient funds
+                </button>
+              </div>
+              <button id="submit-transfer" class="button primary" type="submit">
+                Post fictional transfer <span aria-hidden="true">→</span>
+              </button>
+            </fieldset>
+          </form>
+          <div
+            id="transfer-status"
+            class="status"
+            role="status"
+            aria-live="polite"
+            tabindex="-1"
+            hidden
+          ></div>
+          <button
+            type="button"
+            id="acknowledge"
+            class="button secondary"
+            hidden
+            disabled
+          >
+            I inspected the records; start a new transfer
+          </button>
+          <p class="transfer-limit">
+            One request at a time in this tab. The backend has no idempotency
+            keys: repeating a transfer can debit again.
+          </p>
+        </section>
+        <section
+          id="journal"
+          class="panel journal-panel"
+          aria-labelledby="journal-title"
+        >
+          <div class="section-heading">
+            <div>
+              <p class="eyebrow">03 / TRANSACTION JOURNAL</p>
+              <h2 id="journal-title">Follow the movement</h2>
+            </div>
+            <span id="journal-count" class="small-label">Awaiting records</span>
+          </div>
+          <div class="journal-tools">
+            <label for="journal-filter">Show activity for</label
+            ><select id="journal-filter">
+              <option value="all">All seeded accounts</option>
+            </select>
+          </div>
+          <div id="journal-list" class="journal-list">
+            <p class="empty">
+              The journal will appear after the service responds.
+            </p>
+          </div>
+          <p class="panel-footnote">
+            Select a record to inspect its evidence. This is a transaction
+            journal, not a double-entry ledger.
+          </p>
+        </section>
+        <section
+          id="inspection"
+          class="panel inspection-panel"
+          aria-labelledby="inspection-title"
+        >
+          <div class="section-heading">
+            <div>
+              <p class="eyebrow">04 / INSPECTION</p>
+              <h2 id="inspection-title">Behind the entry</h2>
+            </div>
+            <span aria-hidden="true" class="inspection-mark">↳</span>
+          </div>
+          <div id="transaction-detail">
+            <div class="empty detail-empty">
+              <span aria-hidden="true">≡</span>
+              <h3>Every movement has a story.</h3>
+              <p>
+                Post a fictional transfer, then select its journal entry to
+                trace the account movement, risk assessment, and audit events.
+              </p>
+            </div>
+          </div>
+        </section>
+      </div>
+      <details class="boundary">
+        <summary>What this lab demonstrates</summary>
+        <p>
+          Spring validates requests, locks account rows in a consistent order,
+          and commits balances, the journal, fraud assessments, and audit
+          records in one PostgreSQL transaction. Insufficient-funds transfers
+          return 422 without a journal entry. Fraud scores explain risk after
+          posting; they do not block transfers.
+        </p>
+        <p>
+          The service permits all requests and disables CSRF. Keep it on
+          localhost with invented data. It has no account ownership enforcement,
+          real settlement, or replay protection. The desk only selects the three
+          seeded accounts; other API workflows remain in the API reference.
+        </p>
+      </details>
+    </main>
+    <footer>
+      <span><strong>M1 BANKLAB</strong> / ENGINEERING IN THE OPEN</span
+      ><span>Java · Spring Boot · PostgreSQL</span>
+    </footer>
+  </body>
+</html>
